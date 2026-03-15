@@ -97,15 +97,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
 
       {/* Bottom Section */}
       <div className="p-4 border-t border-border/50">
-        {!collapsed && (
-          <div className="bg-secondary/30 rounded-2xl p-4 mb-4 border border-border/50">
-            <p className="text-xs font-semibold text-muted-foreground mb-1 uppercase tracking-wider">Storage</p>
-            <div className="w-full bg-secondary h-1.5 rounded-full overflow-hidden mb-2">
-              <div className="bg-primary h-full w-[65%]" />
-            </div>
-            <p className="text-[10px] text-muted-foreground">Using 12.4 GB of 20 GB</p>
-          </div>
-        )}
+
         
         <Button
           variant="outline"

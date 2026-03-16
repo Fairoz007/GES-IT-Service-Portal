@@ -182,6 +182,7 @@ export default defineSchema({
     category: v.string(), // e.g., 'Server', 'Application', 'Cloud', 'Social'
     userId: v.string(), // clerkId of the owner
     tags: v.array(v.string()),
+    isFavorite: v.optional(v.boolean()),
     createdAt: v.string(),
     updatedAt: v.string(),
     lastAccessed: v.optional(v.string()),

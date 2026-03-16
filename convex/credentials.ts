@@ -5,11 +5,12 @@ export const create = mutation({
   args: {
     label: v.string(),
     username: v.string(),
-    password: v.string(), // Client-side encryption or server-side (for now we'll handle it)
+    password: v.string(),
     url: v.optional(v.string()),
     notes: v.optional(v.string()),
     category: v.string(),
     tags: v.array(v.string()),
+    isFavorite: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -18,6 +19,7 @@ export const create = mutation({
     const credentialId = await ctx.db.insert("credentials", {
       ...args,
       userId: identity.subject,
+      isFavorite: args.isFavorite || false,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     });
@@ -49,6 +51,7 @@ export const update = mutation({
     notes: v.optional(v.string()),
     category: v.optional(v.string()),
     tags: v.optional(v.array(v.string())),
+    isFavorite: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -63,6 +66,24 @@ export const update = mutation({
 
     await ctx.db.patch(id, {
       ...rest,
+      updatedAt: new Date().toISOString(),
+    });
+  },
+});
+
+export const toggleFavorite = mutation({
+  args: { id: v.id("credentials") },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Unauthorized");
+
+    const existing = await ctx.db.get(args.id);
+    if (!existing || existing.userId !== identity.subject) {
+      throw new Error("Not found or unauthorized");
+    }
+
+    await ctx.db.patch(args.id, {
+      isFavorite: !existing.isFavorite,
       updatedAt: new Date().toISOString(),
     });
   },
